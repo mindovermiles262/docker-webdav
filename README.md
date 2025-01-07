@@ -69,7 +69,7 @@ If you bind mount a certificate chain to `/cert.pem` and a private key to `/priv
 
 ### Authenticate multiple clients
 
-Specifying `USERNAME` and `PASSWORD` only supports a single user. If you want to have lots of different logins for various users, bind mount your own file to `/user.passwd` and the container will use that instead.
+Specifying `USERNAME` and `PASSWORD` only supports a single user. If you want to have lots of different logins for various users, bind mount your own file using the `USER_PASSWD_FILE` environment variable and the container will use that instead.
 
 If using `Basic` authentication, run the following commands:
 
@@ -102,6 +102,6 @@ All environment variables are optional. You probably want to at least specify `U
 * **`REALM`**: Sets [AuthName](https://httpd.apache.org/docs/current/mod/mod_authn_core.html#authname), an identifier that is displayed to clients when they connect. The default is `WebDAV`.
 * **`USERNAME`**: Authenticate with this username (and the password below). This is ignored if you bind mount your own authentication file to `/user.passwd`.
 * **`PASSWORD`**: Authenticate with this password (and the username above). This is ignored if you bind mount your own authentication file to `/user.passwd`.
+* **`USER_PASSWD_FILE`**: Path of the user passwd file used for authentication. The default is `/user.passwd`.
 * **`ANONYMOUS_METHODS`**: Comma-separated list of HTTP request methods (eg, `GET,POST,OPTIONS,PROPFIND`). Clients can use any method you specify here without authentication. Set to `ALL` to disable authentication. The default is to disallow any anonymous access.
 * **`SSL_CERT`**: Set to `selfsigned` to generate a self-signed certificate and enable Apache's SSL module. If you specify `SERVER_NAMES`, the first domain is set as the Common Name.
-

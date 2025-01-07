@@ -10,6 +10,7 @@ set -e
 #   PASSWORD
 #   ANONYMOUS_METHODS
 #   SSL_CERT
+#   USER_PASSWD_FILE
 
 # Just in case this environment variable has gone missing.
 HTTPD_PREFIX="${HTTPD_PREFIX:-/usr/local/apache2}"
@@ -49,16 +50,17 @@ if [ "x$AUTH_TYPE" != "x" ]; then
 fi
 
 # Add password hash, unless "user.passwd" already exists (ie, bind mounted).
-if [ ! -e "/user.passwd" ]; then
-    touch "/user.passwd"
+USER_PASSWD_FILE="${USER_PASSWD_FILE:-/user.passwd}"
+if [ ! -e "$USER_PASSWD_FILE" ]; then
+    touch "$USER_PASSWD_FILE"
     # Only generate a password hash if both username and password given.
     if [ "x$USERNAME" != "x" ] && [ "x$PASSWORD" != "x" ]; then
         if [ "$AUTH_TYPE" = "Digest" ]; then
             # Can't run `htdigest` non-interactively, so use other tools.
             HASH="`printf '%s' "$USERNAME:$REALM:$PASSWORD" | md5sum | awk '{print $1}'`"
-            printf '%s\n' "$USERNAME:$REALM:$HASH" > /user.passwd
+            printf '%s\n' "$USERNAME:$REALM:$HASH" > $USER_PASSWD_FILE
         else
-            htpasswd -B -b -c "/user.passwd" $USERNAME $PASSWORD
+            htpasswd -B -b -c "$USER_PASSWD_FILE" $USERNAME $PASSWORD
         fi
     fi
 fi
